@@ -193,9 +193,4 @@ function LeadDrawer({ lead }: { lead: any }) {
     );
 }
 
-function Badge({ children, className, variant }: { children: React.ReactNode, className?: string, variant?: 'default' | 'secondary' | 'outline' | 'destructive' }) {
-    // Custom Badge component wrapper if shadcn badge isn't automatically available/linked
-    return <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 ${variant === 'outline' ? 'text-foreground' : ''} ${className}`}>
-        {children}
-    </span>
-}
+

@@ -21,6 +21,7 @@ export interface DiscoveryJobData {
 
 export interface AnalysisJobData {
     leadId: string;
+    campaignId: string;
 }
 
 export interface SequenceJobData {

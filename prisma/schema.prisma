@@ -161,6 +161,7 @@ model OutboundEmail {
   threadId          String?
   error             String?  
   queuedAt          DateTime @default(now())
+  scheduledAt       DateTime @default(now())
   sentAt            DateTime?
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt

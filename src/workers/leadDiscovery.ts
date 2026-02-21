@@ -1,5 +1,5 @@
 import { Job } from 'bullmq';
-import { DiscoveryJobData } from '../lib/queue';
+import { DiscoveryJobData, leadAnalysisQueue } from '../lib/queue';
 import { PrismaClient } from '@prisma/client';
 import { logJobStart, logJobCompletion, logJobFailure } from '../lib/logger';
 
@@ -20,7 +20,7 @@ export async function processLeadDiscovery(job: Job<DiscoveryJobData>) {
         ];
 
         for (const mock of mockLeads) {
-            await prisma.lead.upsert({
+            const lead = await prisma.lead.upsert({
                 where: {
                     workspaceId_domain: {
                         workspaceId: 'clp_admin_workspace', // demo ID from seed
@@ -30,13 +30,33 @@ export async function processLeadDiscovery(job: Job<DiscoveryJobData>) {
                 update: {},
                 create: {
                     workspaceId: 'clp_admin_workspace',
-                    campaignId: job.data.campaignId,
                     domain: mock.domain,
                     companyName: mock.companyName,
                     websiteUrl: mock.websiteUrl,
                     source: job.data.source.toUpperCase(),
                     status: 'NEW'
                 }
+            });
+
+            // Link lead to campaign
+            await prisma.campaignLead.upsert({
+                where: {
+                    campaignId_leadId: {
+                        campaignId: job.data.campaignId,
+                        leadId: lead.id
+                    }
+                },
+                update: {},
+                create: {
+                    campaignId: job.data.campaignId,
+                    leadId: lead.id
+                }
+            });
+
+            // Trigger Analysis
+            await leadAnalysisQueue.add('analyze-lead', {
+                leadId: lead.id,
+                campaignId: job.data.campaignId
             });
         }
 

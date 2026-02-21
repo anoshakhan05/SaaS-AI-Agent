@@ -15,6 +15,7 @@ async function triggerDemo() {
             id: 'demo_campaign_1',
             workspaceId,
             name: 'Test Outreach - Dental Lahore',
+            slug: 'test-outreach-lahore',
             status: 'ACTIVE'
         }
     });

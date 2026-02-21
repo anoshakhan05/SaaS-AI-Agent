@@ -13,7 +13,11 @@ export async function processQueueSends(job: Job<QueueSendsJobData>) {
         const campaign = await prisma.campaign.findUnique({
             where: { id: job.data.campaignId },
             include: {
-                leads: { where: { status: 'QUALIFIED' } },
+                leads: {
+                    where: {
+                        lead: { status: 'QUALIFIED' }
+                    }
+                },
                 sequenceSteps: true
             }
         });
@@ -23,11 +27,9 @@ export async function processQueueSends(job: Job<QueueSendsJobData>) {
         // Find all QUEUED emails for this campaign's leads that are supposed to be sent
         const pendingEmails = await prisma.outboundEmail.findMany({
             where: {
-                lead: {
-                    campaignId: campaign.id,
-                    status: 'QUALIFIED'
-                },
-                status: 'QUEUED'
+                campaignId: campaign.id,
+                status: 'QUEUED',
+                scheduledAt: { lte: new Date() }
             },
             take: 20
         });

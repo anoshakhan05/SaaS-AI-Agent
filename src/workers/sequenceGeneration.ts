@@ -105,11 +105,15 @@ Use a clear, single CTA question`;
             // but building the scheduled outbound emails directly is easier for the demo.
             await prisma.outboundEmail.create({
                 data: {
+                    workspaceId: lead.workspaceId,
+                    campaignId: job.data.campaignId,
                     leadId: lead.id,
                     subject: item.subject,
                     body: item.body,
                     status: 'QUEUED',
                     scheduledAt,
+                    toEmail: lead.email || '',
+                    fromEmail: 'codewithanosha@gmail.com', // fallback
                 }
             });
         }

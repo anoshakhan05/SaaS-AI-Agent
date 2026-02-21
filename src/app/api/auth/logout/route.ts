@@ -3,7 +3,7 @@ import { prisma, sha256 } from "@/lib/auth";
 import { cookies } from "next/headers";
 
 export async function POST() {
-    const sessionToken = cookies().get("lp_session")?.value;
+    const sessionToken = (await cookies()).get("lp_session")?.value;
     if (sessionToken) {
         await prisma.session
             .deleteMany({ where: { tokenHash: sha256(sessionToken) } })

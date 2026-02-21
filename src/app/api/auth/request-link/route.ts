@@ -26,7 +26,7 @@ export async function POST(req: Request) {
     const minutes = Number(process.env.MAGICLINK_MINUTES ?? "15");
     const expiresAt = new Date(Date.now() + minutes * 60 * 1000);
 
-    const { ip, userAgent } = getClientMeta();
+    const { ip, userAgent } = await getClientMeta();
 
     await prisma.magicLinkToken.create({
         data: { userEmail: adminEmail, tokenHash, expiresAt, ip, userAgent },

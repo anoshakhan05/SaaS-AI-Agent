@@ -123,7 +123,7 @@ Return JSON with keys:
             console.log(`[Lead Analysis] Lead ${lead.companyName} qualified! Adding to sequence generation.`);
             await sequenceGenerationQueue.add('generate-sequence', {
                 leadId: lead.id,
-                campaignId: lead.campaignId || ''
+                campaignId: job.data.campaignId
             });
         } else {
             await prisma.lead.update({
